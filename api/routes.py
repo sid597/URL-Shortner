@@ -43,18 +43,54 @@ def convert_to_base64(num):
         num /= 64
     return ''.join(encoded[::-1])
 
+
 LONG_TO_ID = {} # used to check if the new url is already shortned 
 ID_TO_LONG = {} # used to return the original long url in case of read
 
+COUNTER = 0
+BASE_URL = 'http://127.0.0.1:5000'
+
 @app.route('/shorten/', methods=['GET', 'POST'])
 def shorten():
+    '''
+    check if url received
+    check if already shortned
+    if not increase counter and create a new id 
+    update the dicts and return
+    '''
 
+    global COUNTER
+    if request.method == 'POST':
+        url = request.json['url']
+        if url:
+            # print(url)
+
+            # see if this url is already shortned
+            if url in LONG_TO_ID:
+                res = jsonify(shortned_url = BASE_URL + LONG_TO_ID[url], error = "")
+                # print(res)
+                return  res
+        
+            COUNTER += 1
+            id = convert_to_base64(COUNTER)
+            LONG_TO_ID[url] = id
+            ID_TO_LONG[id] = url
+        
+            res = jsonify(shortned_url = BASE_URL + id, error = "")
+            # print(res)
+            return res
+        else:
+            return jsonify(error = "no url received")
     return ""
+        
 
 @app.route('/<id>')
 def redirect_to_long_url(id):
-
-    return redirect("")
+    if id in ID_TO_LONG:
+        url = ID_TO_LONG[id] 
+        # print(url)
+        return redirect(url)
+    return "not a valid id"
 
 
 
