@@ -1,6 +1,8 @@
 from api import app
 from flask import request, redirect, jsonify
+from .read_write import *
 import string
+
 
 
 #
@@ -44,9 +46,6 @@ def convert_to_base64(num):
     return ''.join(encoded[::-1])
 
 
-LONG_TO_ID = {} # used to check if the new url is already shortned 
-ID_TO_LONG = {} # used to return the original long url in case of read
-
 COUNTER = 0
 BASE_URL = 'http://127.0.0.1:5000'
 
@@ -66,15 +65,15 @@ def shorten():
             # print(url)
 
             # see if this url is already shortned
-            if url in LONG_TO_ID:
-                res = jsonify(shortned_url = BASE_URL + LONG_TO_ID[url], error = "")
+            if check_if_url_shortned(url):
+                res = jsonify(shortned_url = BASE_URL + get_id(url), error = "")
                 # print(res)
                 return  res
         
             COUNTER += 1
             id = convert_to_base64(COUNTER)
-            LONG_TO_ID[url] = id
-            ID_TO_LONG[id] = url
+            save_to_id(id, url)
+            save_to_long(url,id)
         
             res = jsonify(shortned_url = BASE_URL + id, error = "")
             # print(res)
@@ -86,12 +85,11 @@ def shorten():
 
 @app.route('/<id>')
 def redirect_to_long_url(id):
-    if id in ID_TO_LONG:
-        url = ID_TO_LONG[id] 
+    if check_if_id_present(id):
+        url = get_url(id)
         # print(url)
         return redirect(url)
     return "not a valid id"
 
 
 
-#
