@@ -41,13 +41,14 @@ def convert_to_base64(num):
     encoded = []
     while num > 0:
         remainder  = num % 64
+        print(remainder)
         encoded.append(base64_characters[remainder])
-        num /= 64
+        num = int(num//64)
     return ''.join(encoded[::-1])
 
 
 COUNTER = 0
-BASE_URL = 'http://127.0.0.1:5000'
+BASE_URL = 'http://127.0.0.1:5000/'
 
 @app.route('/shorten/', methods=['GET', 'POST'])
 def shorten():
@@ -62,12 +63,12 @@ def shorten():
     if request.method == 'POST':
         url = request.json['url']
         if url:
-            # print(url)
+            print(url)
 
             # see if this url is already shortned
             if check_if_url_shortned(url):
                 res = jsonify(shortned_url = BASE_URL + get_id(url), error = "")
-                # print(res)
+                print(res)
                 return  res
         
             COUNTER += 1
@@ -76,7 +77,7 @@ def shorten():
             save_to_long(url,id)
         
             res = jsonify(shortned_url = BASE_URL + id, error = "")
-            # print(res)
+            print(res)
             return res
         else:
             return jsonify(error = "no url received")

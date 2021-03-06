@@ -20,7 +20,6 @@ def save_to_id(id, url):
 def check_if_url_shortned(url):
     s = shelve.open('long_to_id.db')
     res = url in s
-    print(s)
     s.close()
 
     return res
