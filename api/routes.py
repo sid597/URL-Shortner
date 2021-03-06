@@ -1,5 +1,6 @@
 from api import app
 from flask import request, redirect, jsonify
+import string
 
 
 #
@@ -16,8 +17,31 @@ from flask import request, redirect, jsonify
 
 # To convert from long to short I will use a base10 to base64 converter 
 
+base64_characters = string.ascii_letters + '0123456789'
+
 def convert_to_base64(num):
-    return ''
+    '''
+    same concept as converting from base 10 to binary (base2)
+    say we want to convert 10 in binary
+    write its remainder when divided by 2 then we divide it by 2 
+    num = X
+    num % 2 = 0, num /= 2
+    
+    for 10:
+    10 % 2 = 0, num = 5
+    5 % 2 = 1, num = 2
+    2 % 2 = 0, num = 1
+    1 % 2 = 1, num =0
+    
+    in binary 10 is -> 1010 
+    
+    '''
+    encoded = []
+    while num > 0:
+        remainder  = num % 64
+        encoded.append(base64_characters[remainder])
+        num /= 64
+    return ''.join(encoded[::-1])
 
 LONG_TO_ID = {} # used to check if the new url is already shortned 
 ID_TO_LONG = {} # used to return the original long url in case of read
