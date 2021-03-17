@@ -13,7 +13,7 @@ def save_to_id(id, url):
     s = shelve.open('id_to_long.db')
     try:
         s[id] = url
-        print(s[id])
+        # print(s[id])
     finally:
         s.close()
 
