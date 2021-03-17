@@ -1,13 +1,12 @@
 
-NOTE: Throughout this file <b>Base_url</b> means `<b>127.0.0.1:5000</b>`
+NOTE: Throughout this file <b>Base_url</b> means <b>`127.0.0.1:5000`</b>
 
 ## How to build the project ? 
 
 1. Build the docker image : ` docker build -t urlshortner .`
 2. Run the image in detached mode on port 5000 : `docker run -d -p 5000:5000 urlshortner` 
-3. Now can serve the api's on `http://localhost:5000/<api endpoint>`
+3. Now can serve the api's on `http://Base_url/<api endpoint>`
 
-<i>NOTE: localhost is set to `127.0.0.1`</i>
 
 ## Testing the project 
 
@@ -36,18 +35,23 @@ This route is used to provide the url which needs to be shortned. Request accept
 Examples:
 
 request type : `POST`
+
 request body: `{ "url" : "https://www.google.com/"}`
+
 response : `{"shortned_url" : "Base_url/d", error:""}`
 
 ### API to get back the original URL from a shortned one
 
-<b> API ENDPOINT : Base_url/<shortned url> </b>
+<b> API ENDPOINT : Base_url/\<shortned url\> </b>
 
 This route is used to redirect to the original path. You make a get request with the shortned url and get the original url as response.
 
 Example :
+
 request type : `GET`
+
 request : Base_url/d
+
 response: Redirects to the original url
 
 ## How is persistance handles ? 
